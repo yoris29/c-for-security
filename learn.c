@@ -18,6 +18,12 @@ node_t *createnode(int val) {
     return new_node;
 }
 
+void insert_beginning(node_t **root, int val) {
+    node_t *new_node = createnode(val);
+    new_node->next = *root;
+    *root = new_node;
+}
+
 void insert_end(node_t **root, int val) {
     node_t *new_node = createnode(val);
     if(*root == NULL) {
@@ -30,6 +36,12 @@ void insert_end(node_t **root, int val) {
 	current_node = current_node->next; 
     }
     current_node->next = new_node;
+}
+
+void insert_after(node_t *node, int val) {
+    node_t *new_node = createnode(val);
+    new_node->next = node->next;
+    node->next = new_node;
 }
 
 void print_list(node_t *root) {
@@ -57,6 +69,7 @@ void free_list_recursive(node_t **root) {
 
     free_list_recursive(root);
 }
+
 void free_list(node_t **root) { 	
     node_t *current_node = *root;
     node_t *temp_node = NULL;
@@ -71,13 +84,12 @@ void free_list(node_t **root) {
 }
 
 int main() {
-    node_t *node0 = createnode(1); 
+    node_t *node0 = NULL; 
 
     insert_end(&node0, 2);
     insert_end(&node0, 4);
-    insert_end(&node0, 8);
-    insert_end(&node0, 9);
-    insert_end(&node0, 11);
+    insert_end(&node0, 5);
+    insert_after(node0->next->next, 10);
 
     print_list(node0);
     free_list_recursive(&node0);
