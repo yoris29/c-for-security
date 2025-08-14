@@ -44,6 +44,17 @@ void insert_after(node_t *node, int val) {
     node->next = new_node;
 }
 
+void sorted_insert(node_t **root, int val) {
+    node_t *new_node = createnode(val);
+
+    if(*root == NULL || val <= (*root)->val) {
+	new_node->next = *root;
+	*root = new_node; 
+	return;
+    }
+    sorted_insert(&((*root)->next), val);
+}
+
 void print_list(node_t *root) {
     node_t *current_node = root;
     while(current_node != NULL) {
@@ -89,7 +100,7 @@ int main() {
     insert_end(&node0, 2);
     insert_end(&node0, 4);
     insert_end(&node0, 5);
-    insert_after(node0->next->next, 10);
+    sorted_insert(&node0, 3);
 
     print_list(node0);
     free_list_recursive(&node0);
