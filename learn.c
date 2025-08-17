@@ -55,6 +55,25 @@ void sorted_insert(node_t **root, int val) {
     sorted_insert(&((*root)->next), val);
 }
 
+void delete_element(node_t **root, int val) {
+    node_t *current_node = *root; 
+    node_t *deleted_node = NULL;
+
+    if((*root)->val == val) {
+	deleted_node = *root;
+	*root = (*root)->next;
+	free(deleted_node);
+	return;
+    }
+    while(current_node->next->val != val) {
+	current_node = current_node->next;
+    }
+
+    deleted_node = current_node->next;
+    current_node->next = current_node->next->next; 
+    free(deleted_node);
+}
+
 void print_list(node_t *root) {
     node_t *current_node = root;
     while(current_node != NULL) {
@@ -100,7 +119,8 @@ int main() {
     insert_end(&node0, 2);
     insert_end(&node0, 4);
     insert_end(&node0, 5);
-    sorted_insert(&node0, 3);
+    delete_element(&node0, 2);
+
 
     print_list(node0);
     free_list_recursive(&node0);
