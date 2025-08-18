@@ -6,6 +6,7 @@ typedef struct node {
     struct node *next;
 } node_t;
 
+
 node_t *createnode(int val) {
     node_t *new_node = (node_t*) malloc(sizeof(node_t));
     if(new_node == NULL) {
@@ -55,23 +56,30 @@ void sorted_insert(node_t **root, int val) {
     sorted_insert(&((*root)->next), val);
 }
 
+
+// Delete all occurences of a number in a linked list 
 void delete_element(node_t **root, int val) {
-    node_t *current_node = *root; 
+    node_t *current_node = *root;
     node_t *deleted_node = NULL;
 
-    if((*root)->val == val) {
+    while (*root != NULL && (*root)->val == val) {
 	deleted_node = *root;
 	*root = (*root)->next;
 	free(deleted_node);
-	return;
-    }
-    while(current_node->next->val != val) {
-	current_node = current_node->next;
     }
 
-    deleted_node = current_node->next;
-    current_node->next = current_node->next->next; 
-    free(deleted_node);
+    current_node = *root;
+
+    while (current_node->next != NULL) {
+	if(current_node->next->val == val) {
+	    deleted_node = current_node->next;
+	    current_node->next = current_node->next->next;
+	    free(deleted_node);
+	} else {
+	    current_node = current_node->next;
+	}
+    }
+   
 }
 
 void print_list(node_t *root) {
