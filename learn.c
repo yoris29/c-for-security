@@ -2,136 +2,175 @@
 #include <stdlib.h>
 
 typedef struct node {
-    int val;
-    struct node *next;
+  int val;
+  struct node *next;
 } node_t;
 
-
+int val = 4;
 node_t *createnode(int val) {
-    node_t *new_node = (node_t*) malloc(sizeof(node_t));
-    if(new_node == NULL) {
-        printf("Could not allocate memory");
-	exit(1);
-    }
+  node_t *new_node = (node_t *)malloc(sizeof(node_t));
+  if (new_node == NULL) {
+    printf("Could not allocate memory");
+    exit(1);
+  }
 
-    new_node->val = val;
-    new_node->next = NULL;
-    return new_node;
+  new_node->val = val;
+  new_node->next = NULL;
+  return new_node;
 }
 
 void insert_beginning(node_t **root, int val) {
-    node_t *new_node = createnode(val);
-    new_node->next = *root;
-    *root = new_node;
+  node_t *new_node = createnode(val);
+  new_node->next = *root;
+  *root = new_node;
 }
 
 void insert_end(node_t **root, int val) {
-    node_t *new_node = createnode(val);
-    if(*root == NULL) {
-	*root = new_node;
-	return;
-    }
+  node_t *new_node = createnode(val);
+  if (*root == NULL) {
+    *root = new_node;
+    return;
+  }
 
-    node_t *current_node = *root;
-    while(current_node->next != NULL) {
-	current_node = current_node->next; 
-    }
-    current_node->next = new_node;
+  node_t *current_node = *root;
+  while (current_node->next != NULL) {
+    current_node = current_node->next;
+  }
+  current_node->next = new_node;
 }
 
 void insert_after(node_t *node, int val) {
-    node_t *new_node = createnode(val);
-    new_node->next = node->next;
-    node->next = new_node;
+  node_t *new_node = createnode(val);
+  new_node->next = node->next;
+  node->next = new_node;
 }
 
 void sorted_insert(node_t **root, int val) {
-    node_t *new_node = createnode(val);
+  node_t *new_node = createnode(val);
 
-    if(*root == NULL || val <= (*root)->val) {
-	new_node->next = *root;
-	*root = new_node; 
-	return;
-    }
-    sorted_insert(&((*root)->next), val);
+  if (*root == NULL || val <= (*root)->val) {
+    new_node->next = *root;
+    *root = new_node;
+    return;
+  }
+  sorted_insert(&((*root)->next), val);
 }
 
-
-// Delete all occurences of a number in a linked list 
+// Delete all occurences of a number in a linked list
 void delete_element(node_t **root, int val) {
-    node_t *current_node = *root;
-    node_t *deleted_node = NULL;
+  node_t *current_node = *root;
+  node_t *deleted_node = NULL;
 
-    while (*root != NULL && (*root)->val == val) {
-	deleted_node = *root;
-	*root = (*root)->next;
-	free(deleted_node);
+  while (*root != NULL && (*root)->val == val) {
+    deleted_node = *root;
+    *root = (*root)->next;
+    free(deleted_node);
+  }
+
+  current_node = *root;
+
+  while (current_node->next != NULL) {
+    if (current_node->next->val == val) {
+      deleted_node = current_node->next;
+      current_node->next = current_node->next->next;
+      free(deleted_node);
+    } else {
+      current_node = current_node->next;
     }
+  }
+}
 
-    current_node = *root;
+void reverse_list(node_t **root) {
+  node_t *current_node = *root;
+  node_t *next_node = NULL;
+  node_t *prev_node = NULL;
 
-    while (current_node->next != NULL) {
-	if(current_node->next->val == val) {
-	    deleted_node = current_node->next;
-	    current_node->next = current_node->next->next;
-	    free(deleted_node);
-	} else {
-	    current_node = current_node->next;
-	}
+  while (current_node != NULL) {
+    next_node = current_node->next;
+    current_node->next = prev_node;
+
+    prev_node = current_node;
+    current_node = next_node;
+  }
+  *root = prev_node;
+}
+
+int has_loops(node_t *root) {
+  node_t *slow = root;
+  node_t *fast = root;
+
+  while (slow != NULL && fast != NULL && fast->next != NULL) {
+    slow = slow->next;
+    fast = fast->next->next;
+
+    if (slow == fast) {
+      return 1;
     }
-   
+  }
+  return 0;
 }
 
 void print_list(node_t *root) {
-    node_t *current_node = root;
-    while(current_node != NULL) {
-	printf("Current node value: %d\n", current_node->val);
-	printf("Current node address: %p\n", current_node);
-	printf("\n");
+  node_t *current_node = root;
+  while (current_node != NULL) {
+    printf("Current node value: %d\n", current_node->val);
+    printf("Current node address: %p\n", current_node);
+    printf("\n");
 
-	current_node = current_node->next;
-    }
+    current_node = current_node->next;
+  }
+}
+
+int count(node_t *root) {
+  node_t *current_node = root;
+  int i = 0;
+
+  if (root == NULL) {
+    return 0;
+  }
+
+  return 1 + count(current_node->next);
 }
 
 // Deallocate memory using recursiveness
 void free_list_recursive(node_t **root) {
-    if(*root == NULL) {
-	return;
-    }
-    node_t *current_node = *root;
-    node_t *next_node = current_node->next;
+  if (*root == NULL) {
+    return;
+  }
+  node_t *current_node = *root;
+  node_t *next_node = current_node->next;
 
-    printf("------ Memory freed at node %d ------\n", current_node->val);
-    free(current_node);
-    *root = next_node;
+  printf("------ Memory freed at node %d ------\n", current_node->val);
+  free(current_node);
+  *root = next_node;
 
-    free_list_recursive(root);
+  free_list_recursive(root);
 }
 
-void free_list(node_t **root) { 	
-    node_t *current_node = *root;
-    node_t *temp_node = NULL;
+void free_list(node_t **root) {
+  node_t *current_node = *root;
+  node_t *temp_node = NULL;
 
-    while(current_node != NULL) {
-	temp_node = current_node->next;
-	free(current_node);
-	current_node = temp_node;
-    }
-    *root = NULL;
-    printf("------ Memory freed ------");
+  while (current_node != NULL) {
+    temp_node = current_node->next;
+    free(current_node);
+    current_node = temp_node;
+  }
+  *root = NULL;
+  printf("------ Memory freed ------");
 }
 
 int main() {
-    node_t *node0 = NULL; 
+  node_t *node0 = NULL;
 
-    insert_end(&node0, 2);
-    insert_end(&node0, 4);
-    insert_end(&node0, 5);
-    delete_element(&node0, 2);
+  insert_end(&node0, 2);
+  insert_end(&node0, 4);
+  insert_end(&node0, 5);
+  insert_end(&node0, 5);
+  printf("%d\n", count(node0));
 
+  print_list(node0);
+  free_list_recursive(&node0);
 
-    print_list(node0);
-    free_list_recursive(&node0);
-
-    return 0;
+  return 0;
 }
