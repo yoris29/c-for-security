@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO: createnode, freenondes, insert beginning, insert ending, delete
-// beginning, delete ending, insert at position, delete at position, reverse
-// list, sort list
+// TODO:  delete beginning, delete ending, insert at position, delete at
+// position, reverse list, sort list
 
 typedef struct node {
   int val;
@@ -22,6 +21,17 @@ node_t *createnode(int val) {
   new_node->prev = NULL;
 
   return new_node;
+}
+
+void insert_beginning(node_t **root, int val) {
+  node_t *new_node = createnode(val);
+
+  if (*root != NULL) {
+    new_node->next = *root;
+    (*root)->prev = new_node;
+  }
+
+  *root = new_node;
 }
 
 void insert_end(node_t **root, int val) {
@@ -46,10 +56,31 @@ void print_list(node_t *root) {
   }
 }
 
+void freenondes(node_t **root) {
+  node_t *current_node = *root;
+  node_t *next = NULL;
+
+  if (*root == NULL) {
+    return;
+  }
+
+  while (current_node != NULL) {
+    next = current_node->next;
+    free(current_node);
+    current_node = next;
+  }
+
+  *root = NULL;
+  printf("\n");
+  printf("------ Memory freed ------");
+}
+
 int main() {
   node_t *node0 = createnode(3);
   insert_end(&node0, 4);
+  insert_beginning(&node0, 2);
 
   print_list(node0);
+  freenondes(&node0);
   return 0;
 }
