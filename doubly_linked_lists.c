@@ -46,6 +46,36 @@ void insert_end(node_t **root, int val) {
   current_node->next->prev = current_node;
 }
 
+void insert_position(node_t **root, int pos, int val) {
+  node_t *current_node = *root;
+  node_t *new_node = createnode(val);
+  int i = 0;
+
+  if (pos == 1) {
+    if (*root != NULL) {
+      (*root)->prev = new_node;
+      new_node->next = *root;
+    }
+
+    *root = new_node;
+    return;
+  }
+
+  while (current_node != NULL && i != pos - 2) {
+    i++;
+    current_node = current_node->next;
+  }
+
+  node_t *next = current_node->next;
+  current_node->next = new_node;
+  new_node->prev = current_node;
+
+  if (next != NULL) {
+    new_node->next = next;
+    next->prev = new_node;
+  }
+}
+
 void print_list(node_t *root) {
   node_t *current_node = root;
 
@@ -78,7 +108,7 @@ void freenondes(node_t **root) {
 int main() {
   node_t *node0 = createnode(3);
   insert_end(&node0, 4);
-  insert_beginning(&node0, 2);
+  insert_position(&node0, 3, 5);
 
   print_list(node0);
   freenondes(&node0);
