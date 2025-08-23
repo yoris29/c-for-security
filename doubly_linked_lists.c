@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO: delete ending, delete at position,
+// TODO: delete at position,
 // reverse list, sort list
 
 typedef struct node {
@@ -88,6 +88,27 @@ void delete_beginning(node_t **root) {
   if (*root != NULL) {
     (*root)->prev = NULL;
   }
+}
+
+void delete_ending(node_t **root) {
+  node_t *current_node = *root;
+
+  if (*root == NULL) {
+    return;
+  }
+  if ((*root)->next == NULL) {
+    free(current_node);
+    *root = NULL;
+    return;
+  }
+
+  while (current_node->next->next != NULL) {
+    current_node = current_node->next;
+  }
+
+  node_t *next = current_node->next;
+  free(next);
+  current_node->next = NULL;
 }
 
 void print_list(node_t *root) {
