@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO:  delete beginning, delete ending, insert at position, delete at
-// position, reverse list, sort list
+// TODO: delete ending, delete at position,
+// reverse list, sort list
 
 typedef struct node {
   int val;
@@ -73,6 +73,20 @@ void insert_position(node_t **root, int pos, int val) {
   if (next != NULL) {
     new_node->next = next;
     next->prev = new_node;
+  }
+}
+
+void delete_beginning(node_t **root) {
+  if (*root == NULL) {
+    return;
+  }
+
+  node_t *next = (*root)->next;
+  free(*root);
+  *root = next;
+
+  if (*root != NULL) {
+    (*root)->prev = NULL;
   }
 }
 
